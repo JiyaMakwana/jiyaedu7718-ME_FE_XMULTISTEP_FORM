@@ -581,7 +581,7 @@
     <div class="nav-row" id="shared-nav">
       <button class="btn-back" id="back-button">Go Back</button>
       <button class="btn-next" id="next-button">Next step</button>
-      <button class="btn-confirm" id="confirm-button" style="display:none;">Confirm</button>
+      <!-- <button class="btn-confirm" id="confirm-button" style="display:none;">Confirm</button> -->
     </div>
 
   </div>
@@ -600,7 +600,7 @@
   const sharedNav = document.getElementById('shared-nav');
   const backButton = document.getElementById('back-button');
   const nextButton = document.getElementById('next-button');
-  const confirmButton = document.getElementById('confirm-button');
+//   const confirmButton = document.getElementById('confirm-button');
 
   function showStep(n){
     currentStep = n;
@@ -614,13 +614,11 @@
     backButton.style.visibility = (n === 1) ? 'hidden' : 'visible';
 
     // Confirm button only on step 4
-    if(n === 4){
-      buildSummary();
-      nextButton.style.display = 'none';
-      confirmButton.style.display = 'inline-block';
+    if (n === 4) {
+    buildSummary();
+    nextButton.textContent = "Confirm";
     } else {
-      nextButton.style.display = 'inline-block';
-      confirmButton.style.display = 'none';
+        nextButton.textContent = "Next step";
     }
   }
 
@@ -744,16 +742,27 @@
     });
   });
 
-  // Single shared "Next step" button drives steps 1, 2, and 3
-  nextButton.addEventListener('click', ()=>{
-    if(currentStep === 1){
-      if(validateStep1()) showStep(2);
-    } else if(currentStep === 2){
-      if(validateStep2()) showStep(3);
-    } else if(currentStep === 3){
-      showStep(4); // buildSummary() runs inside showStep for step 4
+  nextButton.addEventListener("click", () => {
+    switch (currentStep) {
+        case 1:
+            if (validateStep1()) showStep(2);
+            break;
+
+        case 2:
+            if (validateStep2()) showStep(3);
+            break;
+
+        case 3:
+            showStep(4);
+            break;
+
+        case 4:
+            stepPanels.forEach(panel => panel.style.display = "none");
+            sharedNav.classList.add("hidden");
+            thankyou.classList.add("active");
+            break;
     }
-  });
+});
 
   // STEP 4 summary
   function buildSummary(){
